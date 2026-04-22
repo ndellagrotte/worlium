@@ -9,6 +9,7 @@ import org.jspecify.annotations.Nullable;
 
 public final class AirOnlyAquifer implements Aquifer {
     private static final int SURFACE_MARGIN = 2;
+    private static final int LAVA_DEPTH = -56;
 
     private final NoiseChunk noiseChunk;
     private final Aquifer.FluidPicker fluidPicker;
@@ -26,7 +27,9 @@ public final class AirOnlyAquifer implements Aquifer {
         int z = ctx.blockZ();
         int surface = this.noiseChunk.preliminarySurfaceLevel(x, z);
         if (y < surface - SURFACE_MARGIN) {
-            return Blocks.AIR.defaultBlockState();
+            return y < LAVA_DEPTH
+                ? Blocks.LAVA.defaultBlockState()
+                : Blocks.AIR.defaultBlockState();
         }
         return this.fluidPicker.computeFluid(x, y, z).at(y);
     }

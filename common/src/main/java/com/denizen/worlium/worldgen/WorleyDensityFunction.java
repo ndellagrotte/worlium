@@ -33,7 +33,7 @@ public final class WorleyDensityFunction implements DensityFunction.SimpleFuncti
     private static final double NOISE_CUTOFF = -0.18;
     private static final double SURFACE_CUTOFF = -0.081;
     private static final int EASE_IN_DEPTH = 15;
-    private static final int MIN_CAVE_HEIGHT = 1;
+    private static final int MIN_CAVE_HEIGHT = -64;
     private static final int MAX_CAVE_HEIGHT = 128;
 
     private static final double SOLID = 64.0;
@@ -69,13 +69,13 @@ public final class WorleyDensityFunction implements DensityFunction.SimpleFuncti
 
         ensureSeeded();
 
-        float dispAmp = WARP_AMPLIFIER * ((MAX_CAVE_HEIGHT - y) / (MAX_CAVE_HEIGHT * 0.85f));
-        float dx = warp.GetNoise(x, y, z) * dispAmp;
-        float dy = warp.GetNoise(x, y, z + 67f) * dispAmp;
-        float dz = warp.GetNoise(x, y, z + 149f) * dispAmp;
+        float dispAmp = WARP_AMPLIFIER * ((MAX_CAVE_HEIGHT - y * 0.5f) / (MAX_CAVE_HEIGHT * 0.85f));
+        float dx = warp.GetNoise(x, z) * dispAmp;
+        float dy = warp.GetNoise(x, z + 67f) * dispAmp;
+        float dz = warp.GetNoise(x, z + 149f) * dispAmp;
 
         float wx = x + dx;
-        float wy = (y + dy) / Y_COMPRESSION;
+        float wy = y * Y_COMPRESSION + dy;
         float wz = z + dz;
 
         float n = worley.sample(wx, wy, wz);
