@@ -1,6 +1,7 @@
 package com.denizen.worlium.mixin;
 
 import com.denizen.worlium.worldgen.aquifer.AirOnlyAquifer;
+import com.denizen.worlium.worldgen.aquifer.WorliumModifiedNgs;
 import net.minecraft.world.level.levelgen.Aquifer;
 import net.minecraft.world.level.levelgen.DensityFunctions;
 import net.minecraft.world.level.levelgen.blending.Blender;

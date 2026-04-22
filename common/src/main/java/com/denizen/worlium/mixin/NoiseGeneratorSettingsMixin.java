@@ -2,6 +2,7 @@ package com.denizen.worlium.mixin;
 
 import com.denizen.worlium.util.WorldSeedHolder;
 import com.denizen.worlium.worldgen.WorleyDensityFunction;
+import com.denizen.worlium.worldgen.aquifer.WorliumModifiedNgs;
 import net.minecraft.world.level.levelgen.DensityFunctions;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.NoiseRouter;
