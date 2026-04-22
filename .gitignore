@@ -12,6 +12,7 @@ out
 *.iws
 *.iml
 .idea/*
+tmp/*
 !.idea/scopes
 
 # gradle
