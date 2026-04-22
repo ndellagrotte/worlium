@@ -4,6 +4,7 @@
   "package": "com.denizen.worlium.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "NoiseChunkMixin",
     "NoiseGeneratorSettingsMixin",
     "RandomStateMixin",
     "PendingRegistrationMixin"
