@@ -1,4 +1,4 @@
-package com.example.examplemod.platform.services;
+package com.denizen.worlium.platform.services;
 
 public interface IPlatformHelper {
 

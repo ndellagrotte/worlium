@@ -1,7 +1,7 @@
-package com.example.examplemod.platform;
+package com.denizen.worlium.platform;
 
-import com.example.examplemod.Constants;
-import com.example.examplemod.platform.services.IPlatformHelper;
+import com.denizen.worlium.Constants;
+import com.denizen.worlium.platform.services.IPlatformHelper;
 
 import java.util.ServiceLoader;
 
