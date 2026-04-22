@@ -5,7 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [],
   "client": [
-    "com.denizen.worlium.mixin.MixinTitleScreen"
+    "MixinTitleScreenNeoForge"
   ],
   "server": [],
   "injectors": {
