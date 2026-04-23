@@ -3,6 +3,10 @@
 
 it's kinda like worley caves, i guess?
 
+<img width="1920" height="1008" alt="the_worliuming" src="https://github.com/user-attachments/assets/765c9399-0cf2-47ea-891f-3233f52ecf66" />
+
+screenshot
+
 [Discord](https://discord.gg/CRTpUpjSTR)
 
 ## License
