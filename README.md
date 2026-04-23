@@ -1,6 +1,8 @@
 # Worlium
 ### a worldgen mod that improves cave generation or something
 
+it's kinda like worley caves, i guess?
+
 [Discord](https://discord.gg/CRTpUpjSTR)
 
 ## License
