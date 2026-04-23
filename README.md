@@ -7,6 +7,11 @@ it's kinda like worley caves, i guess?
 
 screenshot
 
+## Known Issues
+- this mod attempts to remove aquifers. the implementation is terrible, but it's probably better than nothing.
+- the caves won't generate higher than y=126. but if i were to raise the max y-level, the surface of the overworld would be carved to shreds. not sure what to do about that.
+
+## Discord
 [Discord](https://discord.gg/CRTpUpjSTR)
 
 ## License
