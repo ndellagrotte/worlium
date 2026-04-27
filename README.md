@@ -12,6 +12,7 @@ screenshot
 - cool caves
 - increased diamond rarity
 - removal of diorite, andesite, and granite blobs
+- aquifer removal*
 
 ## Known Issues
 - this mod attempts to remove aquifers. the implementation is terrible, but it's probably better than nothing.
