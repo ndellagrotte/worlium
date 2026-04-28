@@ -1,6 +1,8 @@
 package com.denizen.worlium.mixin;
 
+import com.denizen.worlium.util.AquaticChunkGate;
 import com.denizen.worlium.util.WorldSeedHolder;
+import com.denizen.worlium.worldgen.aquifer.WorliumModifiedNgs;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.RandomState;
@@ -22,5 +24,8 @@ public class RandomStateMixin {
     ) {
         WorldSeedHolder.SEED = levelSeed;
         WorldSeedHolder.HAS_SEED = true;
+        if (((Object) settings) instanceof WorliumModifiedNgs marker && marker.worlium$isModifiedOverworld()) {
+            AquaticChunkGate.setSampler(((RandomState) (Object) this).sampler());
+        }
     }
 }

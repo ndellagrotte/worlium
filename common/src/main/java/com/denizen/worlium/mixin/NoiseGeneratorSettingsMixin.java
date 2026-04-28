@@ -40,7 +40,6 @@ public abstract class NoiseGeneratorSettingsMixin implements WorliumModifiedNgs 
         WorldSeedHolder.LOADING_OVERWORLD_NGS.remove();
 
         NoiseRouter old = this.noiseRouter;
-        WorleyDensityFunction.INSTANCE.setOceanGate(old.continents());
         this.noiseRouter = new NoiseRouter(
             old.barrierNoise(),
             old.fluidLevelFloodednessNoise(),
