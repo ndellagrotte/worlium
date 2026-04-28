@@ -1,21 +1,18 @@
 package com.denizen.worlium.worldgen.aquifer;
 
+import com.denizen.worlium.worldgen.WorleyDensityFunction;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Aquifer;
 import net.minecraft.world.level.levelgen.DensityFunction;
-import net.minecraft.world.level.levelgen.NoiseChunk;
 import org.jspecify.annotations.Nullable;
 
 public final class AirOnlyAquifer implements Aquifer {
-    private static final int SURFACE_MARGIN = 2;
     private static final int LAVA_DEPTH = -56;
 
-    private final NoiseChunk noiseChunk;
     private final Aquifer.FluidPicker fluidPicker;
 
-    public AirOnlyAquifer(NoiseChunk noiseChunk, Aquifer.FluidPicker fluidPicker) {
-        this.noiseChunk = noiseChunk;
+    public AirOnlyAquifer(Aquifer.FluidPicker fluidPicker) {
         this.fluidPicker = fluidPicker;
     }
 
@@ -25,8 +22,9 @@ public final class AirOnlyAquifer implements Aquifer {
         int x = ctx.blockX();
         int y = ctx.blockY();
         int z = ctx.blockZ();
-        int surface = this.noiseChunk.preliminarySurfaceLevel(x, z);
-        if (y < surface - SURFACE_MARGIN) {
+
+        double worley = WorleyDensityFunction.INSTANCE.compute(ctx);
+        if (worley < 0.0) {
             return y < LAVA_DEPTH
                 ? Blocks.LAVA.defaultBlockState()
                 : Blocks.AIR.defaultBlockState();
