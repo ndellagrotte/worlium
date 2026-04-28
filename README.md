@@ -10,12 +10,12 @@ screenshot
 
 ## Features
 - cool caves
+- custom aquifer logic (prevents caves from being flooded with water)
 - increased diamond rarity
 - removal of diorite, andesite, and granite blobs
-- aquifer removal*
 
 ## Known Issues
-- this mod attempts to remove aquifers. the implementation is terrible, but it's probably better than nothing.
+- flat stone walls might appear near rivers and oceans
 
 ## Discord
 [Discord](https://discord.gg/CRTpUpjSTR)
