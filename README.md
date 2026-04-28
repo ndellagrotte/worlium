@@ -17,6 +17,10 @@ screenshot
 ## Known Issues
 - flat stone walls might appear near rivers and oceans
 
+## Compatibility
+- **Terralith**: probably fine
+- **Tectonic**: not ideal
+
 ## Discord
 [Discord](https://discord.gg/CRTpUpjSTR)
 
