@@ -19,7 +19,8 @@ screenshot
 
 ## Compatibility
 - **Terralith**: probably fine
-- **Tectonic**: not ideal
+- **Tectonic**: suboptimal
+- **Cave Overhaul**: no
 
 ## Discord
 [Discord](https://discord.gg/CRTpUpjSTR)
