@@ -18,7 +18,8 @@ screenshot
 - flat stone walls might appear near rivers and oceans
 
 ## Compatibility
-- **Terralith**: probably fine
+- **Terralith**: excellent
+- **CliffTree**: good
 - **Tectonic**: suboptimal
 - **Cave Overhaul**: no
 
