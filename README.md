@@ -7,6 +7,17 @@ it's kinda like worley caves, i guess?
 
 screenshot
 
+
+## Features
+- cool caves
+- custom aquifer logic (prevents caves from being flooded with water)
+- increased diamond rarity
+- removal of diorite, andesite, and granite blobs
+
+## Known Issues
+- flat stone walls might appear near rivers and oceans
+
+## Discord
 [Discord](https://discord.gg/CRTpUpjSTR)
 
 ## License
