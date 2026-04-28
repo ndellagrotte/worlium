@@ -9,7 +9,7 @@ screenshot
 
 
 ## Features
-- cool caves
+- replaces all vanilla caves with a Worley noise-based carver
 - custom aquifer logic (prevents caves from being flooded with water)
 - increased diamond rarity
 - removal of diorite, andesite, and granite blobs
