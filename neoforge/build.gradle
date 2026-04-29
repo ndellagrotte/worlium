@@ -3,6 +3,11 @@ plugins {
     id 'net.neoforged.moddev'
 }
 
+// add lithostitched to neoforge build.gradle
+dependencies {
+    implementation "maven.modrinth:lithostitched:${lithostitched_neoforge_version}"
+}
+
 neoForge {
     version = neoforge_version
     // Automatically enable neoforge AccessTransformers if the file exists

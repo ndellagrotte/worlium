@@ -29,6 +29,11 @@ repositories {
         name = 'BlameJared'
         url = 'https://maven.blamejared.com'
     }
+    // provides lithostitched
+    maven {
+        name = 'ModrinthMaven'
+        url = "https://api.modrinth.com/maven"
+    }
 }
 
 sourcesJar {
