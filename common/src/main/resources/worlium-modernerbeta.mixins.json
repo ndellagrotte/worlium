@@ -1,0 +1,14 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "com.denizen.worlium.modernerbeta_mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "ChunkProviderMixin",
+    "ChunkProviderNoiseMixin",
+    "ModernBetaChunkGeneratorMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 0
+  }
+}
