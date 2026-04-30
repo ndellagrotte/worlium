@@ -73,7 +73,10 @@ public final class WorleyDensityFunction implements DensityFunction.SimpleFuncti
 
         ensureSeeded();
 
-        float dispAmp = WARP_AMPLIFIER * ((MAX_CAVE_HEIGHT - y * 0.5f) / (MAX_CAVE_HEIGHT * 0.85f));
+        // Reference formula was calibrated for Y ∈ [1, 128]; clamp so the extended floor below
+        // Y=1 mirrors the reference's deepest warp (~9.37) rather than extrapolating past it.
+        int ampY = Math.max(y, 1);
+        float dispAmp = WARP_AMPLIFIER * ((MAX_CAVE_HEIGHT - ampY * 0.5f) / (MAX_CAVE_HEIGHT * 0.85f));
         float dx = warp.GetNoise(x, z) * dispAmp;
         float dy = warp.GetNoise(x, z + 67f) * dispAmp;
         float dz = warp.GetNoise(x, z + 149f) * dispAmp;
@@ -90,9 +93,9 @@ public final class WorleyDensityFunction implements DensityFunction.SimpleFuncti
             double t = (y - surfaceStart) / (double) EASE_IN_DEPTH;
             threshold = NOISE_CUTOFF * (1.0 - t) + SURFACE_CUTOFF * t;
         }
-        int lavaFloor = MIN_CAVE_HEIGHT + 5;
-        if (y < lavaFloor) {
-            threshold += 0.05 * (lavaFloor - y);
+        int floorSoftenTop = MIN_CAVE_HEIGHT + 5;
+        if (y < floorSoftenTop) {
+            threshold += 0.05 * (floorSoftenTop - y);
         }
 
         return n > threshold ? AIR : SOLID;
