@@ -1,6 +1,5 @@
 package com.denizen.worlium.mixin;
 
-import com.denizen.worlium.util.NoiseChunkContext;
 import com.denizen.worlium.worldgen.aquifer.AirOnlyAquifer;
 import com.denizen.worlium.worldgen.aquifer.WorliumModifiedNgs;
 import net.minecraft.world.level.levelgen.Aquifer;
@@ -37,8 +36,7 @@ public abstract class NoiseChunkMixin {
         Blender blender,
         CallbackInfo ci
     ) {
-        NoiseChunkContext.CURRENT.set((NoiseChunk) (Object) this);
         if (!(((Object) settings) instanceof WorliumModifiedNgs marker) || !marker.worlium$isModifiedOverworld()) return;
-        this.aquifer = new AirOnlyAquifer(globalFluidPicker);
+        this.aquifer = new AirOnlyAquifer((NoiseChunk) (Object) this, globalFluidPicker);
     }
 }
