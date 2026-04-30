@@ -34,11 +34,11 @@ public final class WorleyDensityFunction implements DensityFunction.SimpleFuncti
     private static final double NOISE_CUTOFF = -0.18;
     private static final double SURFACE_CUTOFF = -0.081;
     private static final int EASE_IN_DEPTH = 15;
-    private static final int MIN_CAVE_HEIGHT = -64;
-    private static final int MAX_CAVE_HEIGHT = 128;
+    public static final int MIN_CAVE_HEIGHT = -64;
+    public static final int MAX_CAVE_HEIGHT = 128;
 
-    private static final double SOLID = 64.0;
-    private static final double AIR = -64.0;
+    public static final double SOLID = 64.0;
+    public static final double AIR = -64.0;
 
     private volatile WorleyNoise worley;
     private volatile FastNoiseLite warp;
@@ -68,7 +68,7 @@ public final class WorleyDensityFunction implements DensityFunction.SimpleFuncti
 
         if (y < MIN_CAVE_HEIGHT || y > MAX_CAVE_HEIGHT) return SOLID;
 
-        AquaticBufferContext aquaticCtx = AquaticBufferContextHolder.CURRENT.get();
+        AquaticBufferContext aquaticCtx = AquaticBufferContextHolder.getForBlock(x, z);
         if (aquaticCtx != null && aquaticCtx.shouldSuppressAt(x, y, z)) return SOLID;
 
         ensureSeeded();

@@ -32,7 +32,7 @@ public abstract class ChunkNoiseGenMixin {
             self.getBiomeSource(),
             random.sampler(),
             random.router().preliminarySurfaceLevel());
-        AquaticBufferContextHolder.CURRENT.set(ctx);
+        AquaticBufferContextHolder.put(chunk.getPos(), ctx);
     }
 
     @Inject(method = "doFill", at = @At("RETURN"))
@@ -45,6 +45,6 @@ public abstract class ChunkNoiseGenMixin {
         int cellCountY,
         CallbackInfoReturnable<ChunkAccess> cir
     ) {
-        AquaticBufferContextHolder.CURRENT.remove();
+        AquaticBufferContextHolder.remove(chunk.getPos());
     }
 }

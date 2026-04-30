@@ -11,6 +11,8 @@ import net.minecraft.world.level.biome.BiomeResolver;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.levelgen.DensityFunction;
 
+import java.util.function.IntBinaryOperator;
+
 public final class AquaticBufferContext {
 
     public static final TagKey<Biome> IS_AQUATIC =
@@ -86,6 +88,24 @@ public final class AquaticBufferContext {
             }
         }
 
+        return new AquaticBufferContext(chunkOriginQuartX, chunkOriginQuartZ, true, caps);
+    }
+
+    public static AquaticBufferContext buildSimpleYGate(ChunkPos chunkPos, IntBinaryOperator surfaceLevelAt) {
+        return buildSimpleYGate(chunkPos, surfaceLevelAt, Y_BUFFER_BLOCKS);
+    }
+
+    public static AquaticBufferContext buildSimpleYGate(ChunkPos chunkPos, IntBinaryOperator surfaceLevelAt, int yBufferBlocks) {
+        int chunkOriginQuartX = QuartPos.fromBlock(chunkPos.getMinBlockX());
+        int chunkOriginQuartZ = QuartPos.fromBlock(chunkPos.getMinBlockZ());
+        int[] caps = new int[CHUNK_QUARTS * CHUNK_QUARTS];
+        for (int mz = 0; mz < CHUNK_QUARTS; mz++) {
+            for (int mx = 0; mx < CHUNK_QUARTS; mx++) {
+                int blockX = QuartPos.toBlock(chunkOriginQuartX + mx) + 2;
+                int blockZ = QuartPos.toBlock(chunkOriginQuartZ + mz) + 2;
+                caps[mz * CHUNK_QUARTS + mx] = surfaceLevelAt.applyAsInt(blockX, blockZ) - yBufferBlocks;
+            }
+        }
         return new AquaticBufferContext(chunkOriginQuartX, chunkOriginQuartZ, true, caps);
     }
 }
