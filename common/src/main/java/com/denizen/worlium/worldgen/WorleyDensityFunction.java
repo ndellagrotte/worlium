@@ -69,7 +69,7 @@ public final class WorleyDensityFunction implements DensityFunction.SimpleFuncti
         if (y < MIN_CAVE_HEIGHT || y > MAX_CAVE_HEIGHT) return SOLID;
 
         AquaticBufferContext aquaticCtx = AquaticBufferContextHolder.CURRENT.get();
-        if (aquaticCtx != null && aquaticCtx.isWithinBufferAt(x, z)) return SOLID;
+        if (aquaticCtx != null && aquaticCtx.shouldSuppressAt(x, y, z)) return SOLID;
 
         ensureSeeded();
 

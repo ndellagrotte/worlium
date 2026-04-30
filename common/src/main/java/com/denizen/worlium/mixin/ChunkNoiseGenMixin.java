@@ -27,8 +27,11 @@ public abstract class ChunkNoiseGenMixin {
         CallbackInfoReturnable<ChunkAccess> cir
     ) {
         ChunkGenerator self = (ChunkGenerator) (Object) this;
-        AquaticBufferContext ctx =
-            AquaticBufferContext.build(chunk.getPos(), self.getBiomeSource(), random.sampler());
+        AquaticBufferContext ctx = AquaticBufferContext.build(
+            chunk.getPos(),
+            self.getBiomeSource(),
+            random.sampler(),
+            random.router().preliminarySurfaceLevel());
         AquaticBufferContextHolder.CURRENT.set(ctx);
     }
 

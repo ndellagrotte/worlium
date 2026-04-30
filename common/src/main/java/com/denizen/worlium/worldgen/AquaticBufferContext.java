@@ -9,6 +9,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeResolver;
 import net.minecraft.world.level.biome.Climate;
+import net.minecraft.world.level.levelgen.DensityFunction;
 
 public final class AquaticBufferContext {
 
@@ -19,25 +20,35 @@ public final class AquaticBufferContext {
     static final int BUFFER_QUARTS = (BUFFER_BLOCKS + 3) >> 2;       // 2
     static final int CHUNK_QUARTS = 16 >> 2;                         // 4
     static final int MASK_SIDE = CHUNK_QUARTS + 2 * BUFFER_QUARTS;   // 8
+    static final int Y_BUFFER_BLOCKS = 8;
+    private static final int NO_SURFACE_CAP = Integer.MAX_VALUE;
 
     private final int maskOriginQuartX;
     private final int maskOriginQuartZ;
     private final boolean[] withinBuffer;
+    private final int[] surfaceCap; // per mask quart: max y at which carving is allowed inside buffer
 
-    private AquaticBufferContext(int maskOriginQuartX, int maskOriginQuartZ, boolean[] withinBuffer) {
+    private AquaticBufferContext(int maskOriginQuartX, int maskOriginQuartZ,
+                                 boolean[] withinBuffer, int[] surfaceCap) {
         this.maskOriginQuartX = maskOriginQuartX;
         this.maskOriginQuartZ = maskOriginQuartZ;
         this.withinBuffer = withinBuffer;
+        this.surfaceCap = surfaceCap;
     }
 
-    public boolean isWithinBufferAt(int blockX, int blockZ) {
+    public boolean shouldSuppressAt(int blockX, int blockY, int blockZ) {
         int qx = QuartPos.fromBlock(blockX) - maskOriginQuartX;
         int qz = QuartPos.fromBlock(blockZ) - maskOriginQuartZ;
         if (qx < 0 || qz < 0 || qx >= MASK_SIDE || qz >= MASK_SIDE) return false;
-        return withinBuffer[qz * MASK_SIDE + qx];
+        int idx = qz * MASK_SIDE + qx;
+        if (!withinBuffer[idx]) return false;
+        int cap = surfaceCap[idx];
+        return cap != NO_SURFACE_CAP && blockY >= cap;
     }
 
-    public static AquaticBufferContext build(ChunkPos chunkPos, BiomeResolver resolver, Climate.Sampler sampler) {
+    public static AquaticBufferContext build(ChunkPos chunkPos, BiomeResolver resolver,
+                                             Climate.Sampler sampler,
+                                             DensityFunction preliminarySurfaceLevel) {
         int chunkOriginQuartX = QuartPos.fromBlock(chunkPos.getMinBlockX());
         int chunkOriginQuartZ = QuartPos.fromBlock(chunkPos.getMinBlockZ());
 
@@ -65,8 +76,11 @@ public final class AquaticBufferContext {
         }
 
         boolean[] mask = new boolean[MASK_SIDE * MASK_SIDE];
+        int[] caps = new int[MASK_SIDE * MASK_SIDE];
+        java.util.Arrays.fill(caps, NO_SURFACE_CAP);
+
         if (!anyAquatic) {
-            return new AquaticBufferContext(maskOriginQuartX, maskOriginQuartZ, mask);
+            return new AquaticBufferContext(maskOriginQuartX, maskOriginQuartZ, mask, caps);
         }
 
         // Chebyshev dilation: a mask cell is buffered if any sample within BUFFER_QUARTS is aquatic.
@@ -87,10 +101,19 @@ public final class AquaticBufferContext {
                         }
                     }
                 }
-                mask[mz * MASK_SIDE + mx] = buffered;
+                int idx = mz * MASK_SIDE + mx;
+                mask[idx] = buffered;
+                if (buffered) {
+                    int blockX = QuartPos.toBlock(maskOriginQuartX + mx) + 2;
+                    int blockZ = QuartPos.toBlock(maskOriginQuartZ + mz) + 2;
+                    int surfaceY = (int) Math.round(
+                        preliminarySurfaceLevel.compute(
+                            new DensityFunction.SinglePointContext(blockX, 0, blockZ)));
+                    caps[idx] = surfaceY - Y_BUFFER_BLOCKS;
+                }
             }
         }
 
-        return new AquaticBufferContext(maskOriginQuartX, maskOriginQuartZ, mask);
+        return new AquaticBufferContext(maskOriginQuartX, maskOriginQuartZ, mask, caps);
     }
 }
