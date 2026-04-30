@@ -12,6 +12,7 @@ screenshot
 ## Features
 - replaces all vanilla caves with a Worley noise-based carver
 - custom aquifer logic (prevents caves from being flooded with water)
+- first-class support for [Moderner Beta](https://modrinth.com/mod/moderner-beta)'s world preset
 - increased diamond rarity
 - removal of diorite, andesite, and granite blobs
 
@@ -20,7 +21,8 @@ screenshot
 - the current aquifer removal logic uses biome tags, which works pretty well but is horrible for compatibility with other worldgen mods
 
 ## Compatibility
-- **Terralith**: excellent
+- **Moderner Beta**: supported
+- **Terralith**: probably fine
 - **CliffTree**: good
 - **Tectonic**: suboptimal
 - **Cave Overhaul**: no
