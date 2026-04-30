@@ -44,7 +44,7 @@ public final class AquaticChunkGate {
     }
 
     private static boolean chunkIsAquatic(int cx, int cz, BiomeSource bs, Climate.Sampler sampler) {
-        long key = ChunkPos.pack(cx, cz);
+        long key = ChunkPos.asLong(cx, cz);
         Boolean cached = CACHE.get(key);
         if (cached != null) return cached;
 
