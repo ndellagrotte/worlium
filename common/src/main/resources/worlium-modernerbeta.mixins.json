@@ -4,8 +4,9 @@
   "package": "com.denizen.worlium.modernerbeta_mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "ModernBetaChunkGeneratorMixin",
-    "ChunkProviderNoiseMixin"
+    "ChunkProviderMixin",
+    "ChunkProviderNoiseMixin",
+    "ModernBetaChunkGeneratorMixin"
   ],
   "injectors": {
     "defaultRequire": 0

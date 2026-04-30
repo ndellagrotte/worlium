@@ -3,17 +3,14 @@ package com.denizen.worlium.modernerbeta_mixin;
 import com.denizen.worlium.compat.modernerbeta.ModernerBetaCompat;
 import com.denizen.worlium.util.AquaticBufferContextHolder;
 import com.denizen.worlium.worldgen.AquaticBufferContext;
-import net.minecraft.core.Holder;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.world.level.StructureManager;
-import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.blending.Blender;
-import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.concurrent.CompletableFuture;
@@ -52,16 +49,25 @@ public abstract class ModernBetaChunkGeneratorMixin {
         }));
     }
 
-    @Redirect(
+    @ModifyExpressionValue(
         method = "applyCarvers",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/world/level/biome/BiomeGenerationSettings;getCarvers()Ljava/lang/Iterable;",
-            remap = true
-        ),
-        remap = true
+            target = "Lmod/bluestaggo/modernerbeta/settings/component/CaveGeneration;forceBetaCaves()Z"
+        )
     )
-    private Iterable<Holder<ConfiguredWorldCarver<?>>> worlium$filterCaveCarvers(BiomeGenerationSettings genSettings) {
-        return ModernerBetaCompat.filterCaveCarvers(genSettings.getCarvers());
+    private boolean worlium$forceNoForceBetaCaves(boolean original) {
+        return false;
+    }
+
+    @ModifyExpressionValue(
+        method = "applyCarvers",
+        at = @At(
+            value = "INVOKE",
+            target = "Lmod/bluestaggo/modernerbeta/settings/component/CaveGeneration;forceBetaCanyons()Z"
+        )
+    )
+    private boolean worlium$forceNoForceBetaCanyons(boolean original) {
+        return false;
     }
 }
