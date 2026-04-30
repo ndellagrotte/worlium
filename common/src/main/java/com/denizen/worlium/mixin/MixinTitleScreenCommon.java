@@ -14,6 +14,5 @@ public class MixinTitleScreenCommon {
     private void init(CallbackInfo info) {
         
         Constants.LOG.info("This line is printed by an example mod common mixin!");
-        Constants.LOG.info("MC Version: {}", Minecraft.getInstance().getVersionType());
     }
 }
