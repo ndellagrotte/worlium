@@ -3,9 +3,11 @@ plugins {
     id 'net.neoforged.moddev'
 }
 
-// add lithostitched to neoforge build.gradle
 dependencies {
+    // add lithostitched to neoforge build.gradle
     implementation "maven.modrinth:lithostitched:${lithostitched_neoforge_version}"
+    // add moderner beta to neoforge build.gradle
+    compileOnly "maven.modrinth:moderner-beta:${moderner_beta_neoforge_version}"
 }
 
 neoForge {

@@ -8,6 +8,9 @@ dependencies {
     implementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
     // add lithostitched to fabric build.gradle
     implementation "maven.modrinth:lithostitched:${lithostitched_fabric_version}"
+    // add moderner beta to fabric build.gradle
+    implementation "maven.modrinth:moderner-beta:${moderner_beta_fabric_version}"
+
 }
 
 loom {
