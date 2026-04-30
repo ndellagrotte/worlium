@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "ChunkNoiseGenMixin",
+    "NoiseBasedAquiferMixin",
     "NoiseGeneratorSettingsMixin",
     "RandomStateMixin",
     "PendingRegistrationMixin"

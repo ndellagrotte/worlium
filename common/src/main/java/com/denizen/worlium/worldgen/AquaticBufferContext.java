@@ -16,33 +16,31 @@ public final class AquaticBufferContext {
     public static final TagKey<Biome> IS_AQUATIC =
         TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath("c", "is_aquatic"));
 
-    static final int BUFFER_BLOCKS = 8;
-    static final int BUFFER_QUARTS = (BUFFER_BLOCKS + 3) >> 2;       // 2
-    static final int CHUNK_QUARTS = 16 >> 2;                         // 4
-    static final int MASK_SIDE = CHUNK_QUARTS + 2 * BUFFER_QUARTS;   // 8
+    static final int CHUNK_QUARTS = 16 >> 2;                     // 4 quarts per chunk side
+    static final int NEIGHBOR_QUARTS = CHUNK_QUARTS;             // 1-chunk dilation = 4 quarts
+    static final int SAMPLE_SIDE = CHUNK_QUARTS + 2 * NEIGHBOR_QUARTS;  // 12 quarts (3 chunks wide)
     static final int Y_BUFFER_BLOCKS = 8;
     private static final int NO_SURFACE_CAP = Integer.MAX_VALUE;
 
-    private final int maskOriginQuartX;
-    private final int maskOriginQuartZ;
-    private final boolean[] withinBuffer;
-    private final int[] surfaceCap; // per mask quart: max y at which carving is allowed inside buffer
+    private final int chunkOriginQuartX;
+    private final int chunkOriginQuartZ;
+    private final boolean chunkBuffered;
+    private final int[] surfaceCap; // CHUNK_QUARTS² entries, indexed by chunk-local quart
 
-    private AquaticBufferContext(int maskOriginQuartX, int maskOriginQuartZ,
-                                 boolean[] withinBuffer, int[] surfaceCap) {
-        this.maskOriginQuartX = maskOriginQuartX;
-        this.maskOriginQuartZ = maskOriginQuartZ;
-        this.withinBuffer = withinBuffer;
+    private AquaticBufferContext(int chunkOriginQuartX, int chunkOriginQuartZ,
+                                 boolean chunkBuffered, int[] surfaceCap) {
+        this.chunkOriginQuartX = chunkOriginQuartX;
+        this.chunkOriginQuartZ = chunkOriginQuartZ;
+        this.chunkBuffered = chunkBuffered;
         this.surfaceCap = surfaceCap;
     }
 
     public boolean shouldSuppressAt(int blockX, int blockY, int blockZ) {
-        int qx = QuartPos.fromBlock(blockX) - maskOriginQuartX;
-        int qz = QuartPos.fromBlock(blockZ) - maskOriginQuartZ;
-        if (qx < 0 || qz < 0 || qx >= MASK_SIDE || qz >= MASK_SIDE) return false;
-        int idx = qz * MASK_SIDE + qx;
-        if (!withinBuffer[idx]) return false;
-        int cap = surfaceCap[idx];
+        if (!chunkBuffered) return false;
+        int qx = QuartPos.fromBlock(blockX) - chunkOriginQuartX;
+        int qz = QuartPos.fromBlock(blockZ) - chunkOriginQuartZ;
+        if (qx < 0 || qz < 0 || qx >= CHUNK_QUARTS || qz >= CHUNK_QUARTS) return false;
+        int cap = surfaceCap[qz * CHUNK_QUARTS + qx];
         return cap != NO_SURFACE_CAP && blockY >= cap;
     }
 
@@ -52,68 +50,42 @@ public final class AquaticBufferContext {
         int chunkOriginQuartX = QuartPos.fromBlock(chunkPos.getMinBlockX());
         int chunkOriginQuartZ = QuartPos.fromBlock(chunkPos.getMinBlockZ());
 
-        int maskOriginQuartX = chunkOriginQuartX - BUFFER_QUARTS;
-        int maskOriginQuartZ = chunkOriginQuartZ - BUFFER_QUARTS;
+        // Sample 3×3 chunks centred on this chunk; origin = chunk - 1 chunk in each direction.
+        int sampleOriginQuartX = chunkOriginQuartX - NEIGHBOR_QUARTS;
+        int sampleOriginQuartZ = chunkOriginQuartZ - NEIGHBOR_QUARTS;
+        int sampleY = QuartPos.fromBlock(64); // arbitrary; aquatic biomes are vertical columns
 
-        // Sample on a wider grid that includes a BUFFER_QUARTS ring around the mask, so the
-        // dilation step below has neighbour data to look at on every side of every mask cell.
-        int sampleSide = MASK_SIDE + 2 * BUFFER_QUARTS;
-        int sampleOriginQuartX = maskOriginQuartX - BUFFER_QUARTS;
-        int sampleOriginQuartZ = maskOriginQuartZ - BUFFER_QUARTS;
-
-        boolean[] aquaticSample = new boolean[sampleSide * sampleSide];
         boolean anyAquatic = false;
-        int sampleY = QuartPos.fromBlock(64); // arbitrary; biome lookup is 3D but aquatic biomes are vertical columns
-
-        for (int qz = 0; qz < sampleSide; qz++) {
-            for (int qx = 0; qx < sampleSide; qx++) {
+        outer:
+        for (int qz = 0; qz < SAMPLE_SIDE; qz++) {
+            for (int qx = 0; qx < SAMPLE_SIDE; qx++) {
                 Holder<Biome> biome = resolver.getNoiseBiome(
                     sampleOriginQuartX + qx, sampleY, sampleOriginQuartZ + qz, sampler);
-                boolean aquatic = biome.is(IS_AQUATIC);
-                aquaticSample[qz * sampleSide + qx] = aquatic;
-                anyAquatic |= aquatic;
+                if (biome.is(IS_AQUATIC)) {
+                    anyAquatic = true;
+                    break outer;
+                }
             }
         }
 
-        boolean[] mask = new boolean[MASK_SIDE * MASK_SIDE];
-        int[] caps = new int[MASK_SIDE * MASK_SIDE];
-        java.util.Arrays.fill(caps, NO_SURFACE_CAP);
-
+        int[] caps = new int[CHUNK_QUARTS * CHUNK_QUARTS];
         if (!anyAquatic) {
-            return new AquaticBufferContext(maskOriginQuartX, maskOriginQuartZ, mask, caps);
+            java.util.Arrays.fill(caps, NO_SURFACE_CAP);
+            return new AquaticBufferContext(chunkOriginQuartX, chunkOriginQuartZ, false, caps);
         }
 
-        // Chebyshev dilation: a mask cell is buffered if any sample within BUFFER_QUARTS is aquatic.
-        for (int mz = 0; mz < MASK_SIDE; mz++) {
-            for (int mx = 0; mx < MASK_SIDE; mx++) {
-                // Sample-grid coords of the corresponding mask cell.
-                int sx = mx + BUFFER_QUARTS;
-                int sz = mz + BUFFER_QUARTS;
-                boolean buffered = false;
-                outer:
-                for (int dz = -BUFFER_QUARTS; dz <= BUFFER_QUARTS; dz++) {
-                    int rz = sz + dz;
-                    int rowOffset = rz * sampleSide;
-                    for (int dx = -BUFFER_QUARTS; dx <= BUFFER_QUARTS; dx++) {
-                        if (aquaticSample[rowOffset + sx + dx]) {
-                            buffered = true;
-                            break outer;
-                        }
-                    }
-                }
-                int idx = mz * MASK_SIDE + mx;
-                mask[idx] = buffered;
-                if (buffered) {
-                    int blockX = QuartPos.toBlock(maskOriginQuartX + mx) + 2;
-                    int blockZ = QuartPos.toBlock(maskOriginQuartZ + mz) + 2;
-                    int surfaceY = (int) Math.round(
-                        preliminarySurfaceLevel.compute(
-                            new DensityFunction.SinglePointContext(blockX, 0, blockZ)));
-                    caps[idx] = surfaceY - Y_BUFFER_BLOCKS;
-                }
+        // Per-cell surface caps for the chunk's 4×4 quart grid.
+        for (int mz = 0; mz < CHUNK_QUARTS; mz++) {
+            for (int mx = 0; mx < CHUNK_QUARTS; mx++) {
+                int blockX = QuartPos.toBlock(chunkOriginQuartX + mx) + 2;
+                int blockZ = QuartPos.toBlock(chunkOriginQuartZ + mz) + 2;
+                int surfaceY = (int) Math.round(
+                    preliminarySurfaceLevel.compute(
+                        new DensityFunction.SinglePointContext(blockX, 0, blockZ)));
+                caps[mz * CHUNK_QUARTS + mx] = surfaceY - Y_BUFFER_BLOCKS;
             }
         }
 
-        return new AquaticBufferContext(maskOriginQuartX, maskOriginQuartZ, mask, caps);
+        return new AquaticBufferContext(chunkOriginQuartX, chunkOriginQuartZ, true, caps);
     }
 }
