@@ -1,32 +1,33 @@
-# MultiLoader Template
+# Worlium
+[Modrinth](https://modrinth.com/mod/worlium) · [Discord](https://discord.gg/CRTpUpjSTR)
 
-This project provides a Gradle project template that can compile Minecraft mods for multiple modloaders using a common project for the sources. This project does not require any third party libraries or dependencies. If you have any questions or want to discuss the project, please join our [Discord](https://discord.myceliummod.network).
+Worlium replaces all vanilla cave generators with a Worley-noise-based carver modeled on the classic [Worley's Caves](https://www.curseforge.com/minecraft/mc-mods/worleys-caves) mod by fluke. The Worlium carver produces sprawling, winding, interconnected tunnels; from a gameplay perspective, the underground becomes a massive, labyrinth-like cave system that feels simultaneously claustrophobic and expansive.
 
-## Getting Started
+The mod ships for both Fabric and NeoForge through a shared common module that implements the carver as a custom `DensityFunction` (`worlium:worley_caves`) plugging into Minecraft's modern worldgen pipeline. Under the hood, the density function samples a seeded 3D Worley F1/F3-edge cellular noise warped by a 2D Perlin displacement field, applies a depth-scaled warp amplitude so caves become more chaotic closer to bedrock, and eases the cutoff back toward solid near the surface to avoid carving terrain into shreds. The result is a drop-in cave overhaul that preserves the visual identity of the original Worley's Caves while living entirely inside the 1.18+ density-function framework.
+<img width="1920" height="1008" alt="the_worliuming" src="https://github.com/user-attachments/assets/765c9399-0cf2-47ea-891f-3233f52ecf66" />
 
-### IntelliJ IDEA
-This guide will show how to import the MultiLoader Template into IntelliJ IDEA. The setup process is roughly equivalent to setting up the modloaders independently and should be very familiar to anyone who has worked with their MDKs.
+screenshot
 
-1. Clone or download this repository to your computer.
-2. Configure the project by setting the properties in the `gradle.properties` file. You will also need to change the `rootProject.name`  property in `settings.gradle`, this should match the folder name of your project, or else IDEA may complain.
-3. Open the template's root folder as a new project in IDEA. This is the folder that contains this README.md file and the gradlew executable.
-4. If your default JVM/JDK is not Java 25 you will encounter an error when opening the project. This error is fixed by going to `File > Settings > Build, Execution, Deployment > Build Tools > Gradle > Gradle JVM` and changing the value to a valid Java 25 JVM. You will also need to set the Project SDK to Java 25. This can be done by going to `File > Project Structure > Project SDK`. Once both have been set open the Gradle tab in IDEA and click the refresh button to reload the project.
-5. Open your Run/Debug Configurations. Under the `Application` category there should now be options to run Fabric and NeoForge projects. Select one of the client options and try to run it.
-6. Assuming you were able to run the game in step 5 your workspace should now be set up.
 
-### Eclipse
-While it is possible to use this template in Eclipse it is not recommended. During the development of this template multiple critical bugs and quirks related to Eclipse were found at nearly every level of the required build tools. While we continue to work with these tools to report and resolve issues support for projects like these are not there yet. For now Eclipse is considered unsupported by this project. The development cycle for build tools is notoriously slow so there are no ETAs available.
+## Features
+- replaces all vanilla caves with a Worley noise-based carver
+- custom aquifer logic (prevents caves from being flooded with water)
+- increased diamond rarity
+- removal of diorite, andesite, and granite blobs
 
-## Development Guide
-When using this template the majority of your mod should be developed in the `common` project. The `common` project is compiled against the vanilla game and is used to hold code that is shared between the different loader-specific versions of your mod. The `common` project has no knowledge or access to ModLoader specific code, apis, or concepts. Code that requires something from a specific loader must be done through the project that is specific to that loader, such as the `fabric` or `neoforge` projects.
+## Known Issues
+- when close to aquatic biomes (oceans, rivers, etc) the carver will occasionally terminate with a flat stone wall
+- the current aquifer removal logic uses biome tags, which works pretty well but is horrible for compatibility with other worldgen mods
 
-Loader specific projects such as the `fabric` and `neoforge` project are used to load the `common` project into the game. These projects also define code that is specific to that loader. Loader specific projects can access all the code in the `common` project. It is important to remember that the `common` project can not access code from loader specific projects.
+## Compatibility
+- **Terralith**: excellent
+- **CliffTree**: good
+- **Tectonic**: suboptimal
+- **Cave Overhaul**: no
 
-## Removing Platforms and Loaders
-While this template has support for many modloaders, new loaders may appear in the future, and existing loaders may become less relevant.
+## License
 
-Removing loader specific projects is as easy as deleting the folder, and removing the `include("projectname")` line from the `settings.gradle` file.
-For example if you wanted to remove support for `forge` you would follow the following steps:
-
-1. Delete the subproject folder. For example, delete `MultiLoader-Template/forge`.
-2. Remove the project from `settings.gradle`. For example, remove `include("forge")`. 
+_Worlium_ is Free Software: You can use, study share and improve it at your
+will. Specifically you can redistribute and/or modify it under the terms of the
+[GNU General Public License, Version 3](https://www.gnu.org/licenses/gpl-3.0.en.html) as
+published by the Free Software Foundation.
