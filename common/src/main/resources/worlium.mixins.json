@@ -6,9 +6,7 @@
   "mixins": [
     "ChunkNoiseGenMixin",
     "NoiseBasedAquiferMixin",
-    "NoiseGeneratorSettingsMixin",
-    "RandomStateMixin",
-    "PendingRegistrationMixin"
+    "RandomStateMixin"
   ],
   "client": [
     "MixinTitleScreenCommon"
