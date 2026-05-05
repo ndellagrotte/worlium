@@ -1,5 +1,6 @@
 package com.denizen.worlium;
 
+import com.denizen.worlium.worldgen.LavaLayerFeature;
 import com.denizen.worlium.worldgen.WorleyDensityFunction;
 import net.minecraft.core.registries.Registries;
 import net.neoforged.bus.api.IEventBus;
@@ -17,6 +18,8 @@ public class WorliumNeoForge {
     private static void onRegister(RegisterEvent event) {
         if (Registries.DENSITY_FUNCTION_TYPE.equals(event.getRegistryKey())) {
             WorleyDensityFunction.register();
+        } else if (Registries.FEATURE.equals(event.getRegistryKey())) {
+            LavaLayerFeature.register();
         }
     }
 }
