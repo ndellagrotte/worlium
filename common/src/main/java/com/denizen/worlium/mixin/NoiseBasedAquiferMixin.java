@@ -15,10 +15,10 @@ public abstract class NoiseBasedAquiferMixin {
     @Inject(method = "computeSubstance", at = @At("HEAD"), cancellable = true)
     private void worlium$forceAirInWorleyCaves(
         DensityFunction.FunctionContext context,
-        double substance,
+        double density,
         CallbackInfoReturnable<BlockState> cir
     ) {
-        if (substance > 0.0) return;
+        if (density > 0.0) return;
         if (WorleyDensityFunction.INSTANCE.compute(context) < 0.0) {
             cir.setReturnValue(Blocks.AIR.defaultBlockState());
         }
