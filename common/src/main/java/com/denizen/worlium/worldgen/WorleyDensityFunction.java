@@ -10,6 +10,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.world.level.levelgen.DensityFunction;
+import org.jspecify.annotations.NonNull;
 
 public final class WorleyDensityFunction implements DensityFunction.SimpleFunction {
 
@@ -112,7 +113,7 @@ public final class WorleyDensityFunction implements DensityFunction.SimpleFuncti
     }
 
     @Override
-    public KeyDispatchDataCodec<? extends DensityFunction> codec() {
+    public @NonNull KeyDispatchDataCodec<? extends DensityFunction> codec() {
         return KD_CODEC;
     }
 }
