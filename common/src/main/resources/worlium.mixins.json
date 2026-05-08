@@ -8,9 +8,7 @@
     "NoiseBasedAquiferMixin",
     "RandomStateMixin"
   ],
-  "client": [
-    "MixinTitleScreenCommon"
-  ],
+  "client": [],
   "server": [],
   "injectors": {
     "defaultRequire": 1
