@@ -20,31 +20,31 @@ public abstract class ChunkNoiseGenMixin {
     private void worlium$beginAquaticBufferContext(
         Blender blender,
         StructureManager structureManager,
-        RandomState random,
-        ChunkAccess chunk,
-        int minCellY,
+        RandomState randomState,
+        ChunkAccess centerChunk,
+        int cellMinY,
         int cellCountY,
         CallbackInfoReturnable<ChunkAccess> cir
     ) {
         ChunkGenerator self = (ChunkGenerator) (Object) this;
         AquaticBufferContext ctx = AquaticBufferContext.build(
-            chunk.getPos(),
+            centerChunk.getPos(),
             self.getBiomeSource(),
-            random.sampler(),
-            random.router().preliminarySurfaceLevel());
-        AquaticBufferContextHolder.put(chunk.getPos(), ctx);
+            randomState.sampler(),
+            randomState.router().preliminarySurfaceLevel());
+        AquaticBufferContextHolder.put(centerChunk.getPos(), ctx);
     }
 
     @Inject(method = "doFill", at = @At("RETURN"))
     private void worlium$endAquaticBufferContext(
         Blender blender,
         StructureManager structureManager,
-        RandomState random,
-        ChunkAccess chunk,
-        int minCellY,
+        RandomState randomState,
+        ChunkAccess centerChunk,
+        int cellMinY,
         int cellCountY,
         CallbackInfoReturnable<ChunkAccess> cir
     ) {
-        AquaticBufferContextHolder.remove(chunk.getPos());
+        AquaticBufferContextHolder.remove(centerChunk.getPos());
     }
 }

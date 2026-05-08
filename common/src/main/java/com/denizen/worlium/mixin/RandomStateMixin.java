@@ -16,11 +16,11 @@ public class RandomStateMixin {
     @Inject(method = "<init>", at = @At("RETURN"))
     private void worlium$captureLevelSeed(
         NoiseGeneratorSettings settings,
-        HolderGetter<NormalNoise.NoiseParameters> noiseParametersGetter,
-        long levelSeed,
+        HolderGetter<NormalNoise.NoiseParameters> noises,
+        long seed,
         CallbackInfo ci
     ) {
-        WorldSeedHolder.SEED = levelSeed;
+        WorldSeedHolder.SEED = seed;
         WorldSeedHolder.HAS_SEED = true;
     }
 }
