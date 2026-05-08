@@ -5,24 +5,29 @@ import com.denizen.worlium.worldgen.AquaticBufferContext;
 import com.denizen.worlium.worldgen.WorleyDensityFunction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.RandomState;
 
 public final class ModernerBetaCompat {
 
     public static int yBufferBlocks = 3;
 
-    public static int surfaceHeight(Object mbChunkGen, int blockX, int blockZ) {
+    public static int surfaceHeight(Object mbChunkGen, int blockX, int blockZ,
+                                    LevelHeightAccessor level, RandomState random) {
         ChunkGenerator gen = (ChunkGenerator) mbChunkGen;
-        return gen.getBaseHeight(blockX, blockZ, Heightmap.Types.OCEAN_FLOOR_WG, null, null);
+        return gen.getBaseHeight(blockX, blockZ, Heightmap.Types.OCEAN_FLOOR_WG, level, random);
     }
 
-    public static AquaticBufferContext buildYGate(Object mbChunkGen, ChunkPos pos) {
-        return AquaticBufferContext.buildSimpleYGate(pos, (x, z) -> surfaceHeight(mbChunkGen, x, z), yBufferBlocks);
+    public static AquaticBufferContext buildYGate(Object mbChunkGen, ChunkPos pos,
+                                                  LevelHeightAccessor level, RandomState random) {
+        return AquaticBufferContext.buildSimpleYGate(pos,
+            (x, z) -> surfaceHeight(mbChunkGen, x, z, level, random), yBufferBlocks);
     }
 
     public static void applyWorleyCarve(ChunkAccess chunk) {

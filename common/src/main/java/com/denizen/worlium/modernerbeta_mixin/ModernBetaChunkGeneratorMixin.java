@@ -26,7 +26,7 @@ public abstract class ModernBetaChunkGeneratorMixin {
         ChunkAccess chunk,
         CallbackInfoReturnable<CompletableFuture<ChunkAccess>> cir
     ) {
-        AquaticBufferContext ctx = ModernerBetaCompat.buildYGate(this, chunk.getPos());
+        AquaticBufferContext ctx = ModernerBetaCompat.buildYGate(this, chunk.getPos(), chunk, noiseConfig);
         AquaticBufferContextHolder.put(chunk.getPos(), ctx);
     }
 
