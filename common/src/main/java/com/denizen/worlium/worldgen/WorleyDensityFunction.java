@@ -1,7 +1,7 @@
 package com.denizen.worlium.worldgen;
 
 import com.denizen.worlium.Constants;
-import com.denizen.worlium.util.AquaticBufferContextHolder;
+import com.denizen.worlium.util.SurfaceBufferContextHolder;
 import com.denizen.worlium.util.FastNoiseLite;
 import com.denizen.worlium.util.WorldSeedHolder;
 import com.mojang.serialization.MapCodec;
@@ -69,8 +69,8 @@ public final class WorleyDensityFunction implements DensityFunction.SimpleFuncti
 
         if (y < MIN_CAVE_HEIGHT || y > MAX_CAVE_HEIGHT) return SOLID;
 
-        AquaticBufferContext aquaticCtx = AquaticBufferContextHolder.getForBlock(x, z);
-        if (aquaticCtx != null && aquaticCtx.shouldSuppressAt(x, y, z)) return SOLID;
+        SurfaceBufferContext surfaceCtx = SurfaceBufferContextHolder.getForBlock(x, z);
+        if (surfaceCtx != null && surfaceCtx.shouldSuppressAt(x, y, z)) return SOLID;
 
         ensureSeeded();
 

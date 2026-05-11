@@ -1,8 +1,8 @@
 package com.denizen.worlium.modernerbeta_mixin;
 
 import com.denizen.worlium.compat.modernerbeta.ModernerBetaCompat;
-import com.denizen.worlium.util.AquaticBufferContextHolder;
-import com.denizen.worlium.worldgen.AquaticBufferContext;
+import com.denizen.worlium.util.SurfaceBufferContextHolder;
+import com.denizen.worlium.worldgen.SurfaceBufferContext;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -26,8 +26,8 @@ public abstract class ModernBetaChunkGeneratorMixin {
         ChunkAccess chunk,
         CallbackInfoReturnable<CompletableFuture<ChunkAccess>> cir
     ) {
-        AquaticBufferContext ctx = ModernerBetaCompat.buildYGate(this, chunk.getPos(), chunk, noiseConfig);
-        AquaticBufferContextHolder.put(chunk.getPos(), ctx);
+        SurfaceBufferContext ctx = ModernerBetaCompat.buildYGate(this, chunk.getPos(), chunk, noiseConfig);
+        SurfaceBufferContextHolder.put(chunk.getPos(), ctx);
     }
 
     @Inject(method = "fillFromNoise", at = @At("RETURN"), cancellable = true, remap = true)
@@ -43,7 +43,7 @@ public abstract class ModernBetaChunkGeneratorMixin {
             try {
                 ModernerBetaCompat.applyWorleyCarve(c);
             } finally {
-                AquaticBufferContextHolder.remove(c.getPos());
+                SurfaceBufferContextHolder.remove(c.getPos());
             }
             return c;
         }));

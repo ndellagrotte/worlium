@@ -1,7 +1,7 @@
 package com.denizen.worlium.compat.modernerbeta;
 
-import com.denizen.worlium.util.AquaticBufferContextHolder;
-import com.denizen.worlium.worldgen.AquaticBufferContext;
+import com.denizen.worlium.util.SurfaceBufferContextHolder;
+import com.denizen.worlium.worldgen.SurfaceBufferContext;
 import com.denizen.worlium.worldgen.WorleyDensityFunction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
@@ -24,15 +24,15 @@ public final class ModernerBetaCompat {
         return gen.getBaseHeight(blockX, blockZ, Heightmap.Types.OCEAN_FLOOR_WG, level, random);
     }
 
-    public static AquaticBufferContext buildYGate(Object mbChunkGen, ChunkPos pos,
+    public static SurfaceBufferContext buildYGate(Object mbChunkGen, ChunkPos pos,
                                                   LevelHeightAccessor level, RandomState random) {
-        return AquaticBufferContext.buildSimpleYGate(pos,
+        return SurfaceBufferContext.buildFromHeightLookup(pos,
             (x, z) -> surfaceHeight(mbChunkGen, x, z, level, random), yBufferBlocks);
     }
 
     public static void applyWorleyCarve(ChunkAccess chunk) {
         ChunkPos pos = chunk.getPos();
-        AquaticBufferContext ctx = AquaticBufferContextHolder.getForChunk(pos);
+        SurfaceBufferContext ctx = SurfaceBufferContextHolder.getForChunk(pos);
         BlockPos.MutableBlockPos m = new BlockPos.MutableBlockPos();
         BlockState air = Blocks.CAVE_AIR.defaultBlockState();
         int minBlockX = pos.getMinBlockX();
