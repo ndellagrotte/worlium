@@ -1,10 +1,10 @@
 package com.denizen.worlium.worldgen;
 
 import com.denizen.worlium.Constants;
-import com.denizen.worlium.util.SurfaceBufferContextHolder;
-import com.denizen.worlium.util.FastNoiseLite;
+import com.denizen.worlium.util.AquaticBufferContextHolder;
 import com.denizen.worlium.util.WorldSeedHolder;
 import com.mojang.serialization.MapCodec;
+import dev.worldgen.lithostitched.api.worldgen.densityfunction.fastnoise.FNL;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -42,7 +42,7 @@ public final class WorleyDensityFunction implements DensityFunction.SimpleFuncti
     public static final double AIR = -64.0;
 
     private volatile WorleyNoise worley;
-    private volatile FastNoiseLite warp;
+    private volatile FNL warp;
 
     private WorleyDensityFunction() {}
 
@@ -53,8 +53,8 @@ public final class WorleyDensityFunction implements DensityFunction.SimpleFuncti
             int seed = WorldSeedHolder.HAS_SEED ? (int) WorldSeedHolder.SEED : 0;
             WorleyNoise w = new WorleyNoise(seed);
             w.setFrequency(CELLULAR_FREQUENCY);
-            FastNoiseLite f = new FastNoiseLite(seed);
-            f.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
+            FNL f = new FNL(seed);
+            f.SetNoiseType(FNL.NoiseType.Perlin);
             f.SetFrequency(WARP_FREQUENCY);
             warp = f;
             worley = w;
@@ -69,8 +69,8 @@ public final class WorleyDensityFunction implements DensityFunction.SimpleFuncti
 
         if (y < MIN_CAVE_HEIGHT || y > MAX_CAVE_HEIGHT) return SOLID;
 
-        SurfaceBufferContext surfaceCtx = SurfaceBufferContextHolder.getForBlock(x, z);
-        if (surfaceCtx != null && surfaceCtx.shouldSuppressAt(x, y, z)) return SOLID;
+        AquaticBufferContext aquaticCtx = AquaticBufferContextHolder.getForBlock(x, z);
+        if (aquaticCtx != null && aquaticCtx.shouldSuppressAt(x, y, z)) return SOLID;
 
         ensureSeeded();
 
